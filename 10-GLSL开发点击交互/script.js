@@ -9,6 +9,7 @@
       return;
   
     var source = document.querySelector("#vertex-shader").innerHTML;
+
     //createShader 创建着色器
     var vertexShader = gl.createShader(gl.VERTEX_SHADER);
 
@@ -56,8 +57,25 @@
     gl.useProgram(program);
     gl.drawArrays(gl.POINTS, 0, 1);
   
-    cleanup();
+    // cleanup();
+    document.querySelector("canvas").addEventListener("click",
+    (evt) => {
+      const clickXRelativeToCanvas = evt.pageX - evt.target.offsetLeft;
+      //x轴坐标：(offsetX - 1/2宽度) / 1/2宽度;clickXinWebGLCoords 为得出的坐标
+      const clickXinWebGLCoords =
+        (2.0 * (clickXRelativeToCanvas - gl.drawingBufferWidth / 2)) /
+        gl.drawingBufferWidth;
+      gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array([clickXinWebGLCoords]),
+        gl.STATIC_DRAW,
+      );
+      gl.drawArrays(gl.POINTS, 0, 1);
+    }
+    ,false)
   }
+
+  
   
   var buffer;
   function initializeAttributes() {
